@@ -1,9 +1,9 @@
 const AWS = require('aws-sdk');
 
 AWS.config.update({
-  accessKeyId: 'YOUR_AWS_ACCESS_KEY',
-  secretAccessKey: 'YOUR_AWS_SECRET_ACCESS_KEY',
-  region: 'YOUR_AWS_REGION'
+  accessKeyId: 'AKIA26HX2AKWG4EVCXPY',
+  secretAccessKey: '2rzGCvIoodAmh9d6HRN5j9mwV7tw9DZfo8hqp457',
+  region: "us-east-1"
 });
 
 const express = require('express');
@@ -12,7 +12,7 @@ const app = express();
 app.get('/images/:filename', (req, res) => {
   const s3 = new AWS.S3();
   const params = {
-    Bucket: 'YOUR_S3_BUCKET_NAME',
+    Bucket: 'friender-bucket-rithm31',
     Key: req.params.filename
   };
 
