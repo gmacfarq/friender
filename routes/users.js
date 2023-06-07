@@ -43,7 +43,7 @@ const upload = multer({
       cb(null, { fieldName: file.fieldname });
     },
     key: function (req, file, cb) {
-      cb(null, file.originalname);
+      cb(null, Date.now() + "_" + file.fieldname + "_" + file.originalname);
     }
   })
 });
@@ -98,8 +98,8 @@ router.post("/", upload.single('image'), async function (req, res, next) {
   const newUser = await User.register({ ...req.body, imgUrl });
 
   //TODO: arrayNearbyUsers = User.getNearbyUsers(user.zipCode, user.friendRadius)
-  for (otherUsername of allUserNames) {
-    data = {
+  for (let otherUsername of allUserNames) {
+    const data = {
       user_username_1: newUser.username,
       user_username_2: otherUsername
     };
