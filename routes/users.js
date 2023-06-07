@@ -19,12 +19,6 @@ const userUpdateSchema = require("../schemas/userUpdate.json");
 const router = express.Router();
 
 
-// AWS.config.update({
-//   accessKeyId: AWS_ACCESS_KEY,
-//   secretAccessKey: AWS_SECRET_ACCESS_KEY,
-//   region: "us-east-1"
-// });
-
 const s3 = new S3Client({
   credentials: {
     accessKeyId: AWS_ACCESS_KEY,
