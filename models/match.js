@@ -22,9 +22,9 @@ class Match {
     const result = await db.query(`
     INSERT INTO ${tableName} (
       user_username_1,
-      user_username_2,
+      user_username_2
       )
-    VALUES ($1, $2, $3)
+    VALUES ($1, $2)
     RETURNING
        match_id AS "matchId",
        user_username_1 AS "userUserName1",

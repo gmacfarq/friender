@@ -103,6 +103,7 @@ router.post("/", upload.single('image'), async function (req, res, next) {
       user_username_1: newUser.username,
       user_username_2: otherUsername
     };
+    console.log(otherUsername)
     Match.create(data);
   }
 

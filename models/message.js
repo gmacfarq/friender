@@ -20,7 +20,7 @@ class Message {
       sender_username,
       message_text,
       message_date)
-      VALUE($1, $2, $3, $4)
+      VALUES ($1, $2, $3, $4)
       RETURNING
         message_id AS "messageId",
         receiver_username AS  "receiverUsername",
