@@ -37,7 +37,7 @@ class Match {
     return result.rows[0];
   }
 
-  s
+  
 
   static async getSuccessful(id) {
     const result = await db.query(`
