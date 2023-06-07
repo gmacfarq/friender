@@ -7,7 +7,7 @@ const { AWS_ACCESS_KEY, AWS_SECRET_ACCESS_KEY } = require("../config.js");
 const express = require("express");
 const multer = require('multer');
 const multerS3 = require('multer-s3');
-const AWS = require('aws-sdk');
+const { S3Client } = require('@aws-sdk/client-s3');
 const { ensureCorrectUserOrAdmin, ensureAdmin } = require("../middleware/auth");
 const { BadRequestError } = require("../expressError");
 const User = require("../models/user");
@@ -19,20 +19,26 @@ const userUpdateSchema = require("../schemas/userUpdate.json");
 const router = express.Router();
 
 
-AWS.config.update({
-  accessKeyId: AWS_ACCESS_KEY,
-  secretAccessKey: AWS_SECRET_ACCESS_KEY,
+// AWS.config.update({
+//   accessKeyId: AWS_ACCESS_KEY,
+//   secretAccessKey: AWS_SECRET_ACCESS_KEY,
+//   region: "us-east-1"
+// });
+
+const s3 = new S3Client({
+  credentials: {
+    accessKeyId: AWS_ACCESS_KEY,
+    secretAccessKey: AWS_SECRET_ACCESS_KEY,
+  },
   region: "us-east-1"
 });
 
-const s3 = new AWS.S3();
 const bucketName = 'friender-bucket-rithm31';
 
 const upload = multer({
   storage: multerS3({
     s3: s3,
     bucket: bucketName,
-    acl: 'public-read', // Set the access control to public-read if desired
     metadata: function (req, file, cb) {
       cb(null, { fieldName: file.fieldname });
     },
@@ -66,7 +72,7 @@ router.post("/", upload.single('image'), async function (req, res, next) {
   }
 
   const imageFile = req.file;
-  console.log("imageFile = ", imageFile)
+  console.log("imageFile = ", imageFile);
   let imgUrl = `https://${bucketName}.s3.amazonaws.com/${imageFile.key}`;;
 
   // console.log("file recieved = ", imageFile);
