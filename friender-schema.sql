@@ -3,7 +3,8 @@ CREATE TABLE users (
   password TEXT NOT NULL,
   first_name TEXT NOT NULL,
   last_name TEXT NOT NULL,
-  location INTEGER NOT NULL,
+  zip_code INTEGER NOT NULL,
+  friend_radius INTEGER,
   hobbies TEXT NOT NULL,
   interests TEXT NOT NULL,
   img_url TEXT,
@@ -18,7 +19,7 @@ CREATE TABLE potential_matches (
     REFERENCES users ON DELETE CASCADE,
   user_username_2 VARCHAR(50)
     REFERENCES users ON DELETE CASCADE,
- match_date DATE DEFAULT NULL
+ match_date DATE DEFAULT CURRENT_DATE NOT NULL
 );
 
 CREATE TABLE successful_matches (

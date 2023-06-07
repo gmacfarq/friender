@@ -225,6 +225,7 @@ class User {
     if (!user) throw new NotFoundError(`No user: ${username}`);
   }
 
+  //static async createMatch(username_1, username_2)
 
 }
 
