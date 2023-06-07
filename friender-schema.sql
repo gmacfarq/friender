@@ -1,5 +1,6 @@
 CREATE TABLE users (
-  username VARCHAR(25) PRIMARY KEY,
+  user_id INT PRIMARY KEY,
+  username VARCHAR(50),
   password TEXT NOT NULL,
   first_name TEXT NOT NULL,
   last_name TEXT NOT NULL,
@@ -12,23 +13,31 @@ CREATE TABLE users (
   is_admin BOOLEAN NOT NULL DEFAULT FALSE
 );
 
-CREATE TABLE matches (
-  id SERIAL PRIMARY KEY,
-  liker_username VARCHAR(25)
+CREATE TABLE potential_matches (
+  match_id SERIAL PRIMARY KEY,
+  user_id_1 INT
     REFERENCES users ON DELETE CASCADE,
-  liked_username VARCHAR(25)
+  user_id_2 INT
     REFERENCES users ON DELETE CASCADE,
-  is_successful_match BOOLEAN DEFAULT FALSE,
   timestamp DATE DEFAULT NULL
 );
 
+CREATE TABLE successful_matches (
+  match_id SERIAL PRIMARY KEY,
+  user_id_1 INT
+    REFERENCES users ON DELETE CASCADE,
+  user_id_2 INT
+    REFERENCES users ON DELETE CASCADE,
+  match_date DATE DEFAULT CURRENT_DATE NOT NULL
+);
+
 CREATE TABLE messages (
-  id SERIAL,
-  match_id INTEGER
-    REFERENCES matches ON DELETE CASCADE,
-  sender_username VARCHAR(25)
+  message_id SERIAL PRIMARY KEY,
+  receiver_id INT
+    REFERENCES users ON DELETE CASCADE,
+  sender_id INT
     REFERENCES users ON DELETE CASCADE,
   message_text TEXT NOT NULL,
-  timestamp DATE DEFAULT CURRENT_DATE NOT NULL,
-  PRIMARY KEY (id, match_id, sender_username)
+  message_date DATE DEFAULT CURRENT_DATE NOT NULL
+
 );

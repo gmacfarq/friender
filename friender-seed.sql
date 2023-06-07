@@ -1,26 +1,25 @@
--- Insert users
-INSERT INTO users (username, password, first_name, last_name, location, hobbies, interests, img_filename, email, is_admin)
+-- Inserting users
+INSERT INTO users (user_id, username, password, first_name, last_name, location, hobbies, interests, img_filename, email, is_admin)
 VALUES
-  ('user1', 'password1', 'John', 'Doe', 1, 'Hiking, Cooking', 'Photography', 'user1.jpg', 'john.doe@example.com', FALSE),
-  ('user2', 'password2', 'Jane', 'Smith', 2, 'Reading, Painting', 'Music', 'user2.jpg', 'jane.smith@example.com', FALSE),
-  ('user3', 'password3', 'Michael', 'Johnson', 3, 'Sports, Traveling', 'Gardening', 'user3.jpg', 'michael.johnson@example.com', FALSE);
+  (1, 'user1', 'password1', 'John', 'Doe', 12345, 'Hiking, Cooking', 'Reading, Painting', 'user1.jpg', 'user1@example.com', FALSE),
+  (2, 'user2', 'password2', 'Jane', 'Smith', 54321, 'Running, Swimming', 'Photography, Traveling', 'user2.jpg', 'user2@example.com', FALSE),
+  (3, 'user3', 'password3', 'Mike', 'Johnson', 98765, 'Cycling, Gaming', 'Music, Movies', 'user3.jpg', 'user3@example.com', FALSE);
 
--- Insert matches
-INSERT INTO matches (liker_username, liked_username, is_successful_match, timestamp)
+-- Inserting a successful match
+INSERT INTO successful_matches (match_id, user_id_1, user_id_2, match_date)
 VALUES
-  ('user1', 'user2', TRUE, CURRENT_DATE),
-  ('user2', 'user3', FALSE, CURRENT_DATE);
-
--- Insert messages
-INSERT INTO messages (match_id, sender_username, message_text, timestamp)
+  (1, 1, 2, CURRENT_DATE);
+  -- Inserting potential matches
+INSERT INTO potential_matches (match_id, user_id_1, user_id_2,  timestamp)
 VALUES
-  -- Messages for successful match (match_id: 1)
-  (1, 'user1', 'Hi Jane! How are you?', CURRENT_DATE),
-  (1, 'user2', 'Hey John! I am doing great, thanks!', CURRENT_DATE + INTERVAL '1 hour'),
-  (1, 'user1', 'Thats good to hear! Are you up for hiking this weekend?', CURRENT_DATE + INTERVAL '2 hours'),
-  (1, 'user2', 'Absolutely! Hiking sounds fun. Lets do it!', CURRENT_DATE + INTERVAL '2 hours 30 minutes'),
+  (1, 1, 2, NULL),
+  (2, 2, 3, NULL),
+  (3, 1, 3, NULL);
 
-  -- Messages for unsuccessful match (match_id: 2)
-  (2, 'user2', 'Hi Michael! Hows your day going?', CURRENT_DATE),
-  (2, 'user3', 'Hey Jane! Its been a busy day, but Im doing well.', CURRENT_DATE + INTERVAL '1 hour');
-
+-- Inserting messages
+INSERT INTO messages (message_id, receiver_id, sender_id, message_text, message_date)
+VALUES
+  (1, 1, 2, 'Hello, would you like to grab a coffee sometime?', CURRENT_DATE),
+  (2, 2, 1, 'Sure! I love coffee. How about meeting at the cafe near the park?', CURRENT_DATE),
+  (3, 3, 2, 'I saw that you also enjoy swimming. Do you have any favorite swimming spots?', CURRENT_DATE),
+  (4, 2, 3, 'Yes, I love swimming! Theres a great community pool in my neighborhood.', CURRENT_DATE);
