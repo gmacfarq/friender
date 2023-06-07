@@ -6,28 +6,29 @@ CREATE TABLE users (
   location INTEGER NOT NULL,
   hobbies TEXT NOT NULL,
   interests TEXT NOT NULL,
-  img_filename TEXT
+  img_filename TEXT,
   email TEXT
     CHECK (position('@' IN email) > 1),
   is_admin BOOLEAN NOT NULL DEFAULT FALSE
 );
 
 CREATE TABLE matches (
-  id SERIAL PRIMARY KEY
-  username_liking VARCHAR(25)
+  id SERIAL PRIMARY KEY,
+  liker_username VARCHAR(25)
     REFERENCES users ON DELETE CASCADE,
-  username_liked VARCHAR(25)
+  liked_username VARCHAR(25)
     REFERENCES users ON DELETE CASCADE,
-  successful_match BOOLEAN DEFAULT FALSE
-  timestamp DATE DEFAULT NULL,
+  is_successful_match BOOLEAN DEFAULT FALSE,
+  timestamp DATE DEFAULT NULL
 );
 
 CREATE TABLE messages (
   id SERIAL,
   match_id INTEGER
     REFERENCES matches ON DELETE CASCADE,
-  user_sending_message VARCHAR(25)
+  sender_username VARCHAR(25)
     REFERENCES users ON DELETE CASCADE,
+  message_text TEXT NOT NULL,
   timestamp DATE DEFAULT CURRENT_DATE NOT NULL,
-  PRIMARY KEY (id, match_id, user_sending_message)
+  PRIMARY KEY (id, match_id, sender_username)
 );
