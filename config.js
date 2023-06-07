@@ -28,4 +28,5 @@ module.exports = {
   AWS_SECRET_ACCESS_KEY,
   getDatabaseUri,
   BCRYPT_WORK_FACTOR,
+  PORT
 }

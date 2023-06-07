@@ -3,10 +3,10 @@ CREATE TABLE users (
   password TEXT NOT NULL,
   first_name TEXT NOT NULL,
   last_name TEXT NOT NULL,
-  zip_code INTEGER NOT NULL,
+  zip_code INTEGER,
   friend_radius INTEGER,
-  hobbies TEXT NOT NULL,
-  interests TEXT NOT NULL,
+  hobbies TEXT,
+  interests TEXT,
   img_url TEXT,
   email TEXT
     CHECK (position('@' IN email) > 1),

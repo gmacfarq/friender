@@ -3,21 +3,21 @@
 /** Routes for users. */
 
 const jsonschema = require("jsonschema");
-const {AWS_ACCESS_KEY, AWS_SECRET_ACCESS_KEY} = require("../config.js")
+const { AWS_ACCESS_KEY, AWS_SECRET_ACCESS_KEY } = require("../config.js");
 const express = require("express");
 const multer = require('multer');
+const multerS3 = require('multer-s3');
 const AWS = require('aws-sdk');
 const { ensureCorrectUserOrAdmin, ensureAdmin } = require("../middleware/auth");
 const { BadRequestError } = require("../expressError");
 const User = require("../models/user");
-const Match = require("../models/match")
+const Match = require("../models/match");
 const { createToken } = require("../helpers/tokens");
 const userNewSchema = require("../schemas/userNew.json");
 const userUpdateSchema = require("../schemas/userUpdate.json");
 
 const router = express.Router();
 
-const upload = multer({ dest: 'uploads/' });
 
 AWS.config.update({
   accessKeyId: AWS_ACCESS_KEY,
@@ -26,8 +26,21 @@ AWS.config.update({
 });
 
 const s3 = new AWS.S3();
-const bucketName = 'friender-bucket-rithm31'
+const bucketName = 'friender-bucket-rithm31';
 
+const upload = multer({
+  storage: multerS3({
+    s3: s3,
+    bucket: bucketName,
+    acl: 'public-read', // Set the access control to public-read if desired
+    metadata: function (req, file, cb) {
+      cb(null, { fieldName: file.fieldname });
+    },
+    key: function (req, file, cb) {
+      cb(null, file.originalname);
+    }
+  })
+});
 
 /** POST / { user }  => { user, token }
  *
@@ -43,36 +56,48 @@ const bucketName = 'friender-bucket-rithm31'
 //TODO: handle image post and change schema too
 router.post("/", upload.single('image'), async function (req, res, next) {
   const validator = jsonschema.validate(
-      req.body,
-      userNewSchema,
-      { required: true },
+    req.body,
+    userNewSchema,
+    { required: true },
   );
   if (!validator.valid) {
     const errs = validator.errors.map(e => e.stack);
     throw new BadRequestError(errs);
   }
 
-  const imageFile = req.file
+  const imageFile = req.file;
+  console.log("imageFile = ", imageFile)
+  let imgUrl = `https://${bucketName}.s3.amazonaws.com/${imageFile.key}`;;
 
-  const params = {
-    Bucket: bucketName,
-    Key: imageFile.originalname,
-    Body: imageFile.buffer,
-    ACL: 'public-read'
-  };
+  // console.log("file recieved = ", imageFile);
+  // const params = {
+  //   Bucket: bucketName,
+  //   Key: imageFile.originalname,
+  //   Body: imageFile.buffer,
+  //   ACL: 'public-read'
+  // };
+
+  // try {
+  //   const uploadedObject = await s3.upload(params).promise();
+  //   imgUrl = uploadedObject.Location;
+  //   res.status(200).json({ message: 'Image uploaded successfully' });
+  // } catch (error) {
+  //   console.error('Error uploading image to S3:', error);
+  //   res.status(500).json({ message: 'Error uploading image' });
+  // }
 
   const allUsers = await User.findAll();
-  const allUserNames = allUsers.map(user => user.username)
+  const allUserNames = allUsers.map(user => user.username);
 
-  const newUser = await User.register(req.body);
+  const newUser = await User.register({ ...req.body, imgUrl });
 
   //TODO: arrayNearbyUsers = User.getNearbyUsers(user.zipCode, user.friendRadius)
-  for(otherUsername of allUserNames){
+  for (otherUsername of allUserNames) {
     data = {
       user_username_1: newUser.username,
       user_username_2: otherUsername
-    }
-    Match.create(data)
+    };
+    Match.create(data);
   }
 
   const token = createToken(newUser);
@@ -119,9 +144,9 @@ router.get("/:username", async function (req, res, next) {
 
 router.patch("/:username", async function (req, res, next) {
   const validator = jsonschema.validate(
-      req.body,
-      userUpdateSchema,
-      { required: true },
+    req.body,
+    userUpdateSchema,
+    { required: true },
   );
   if (!validator.valid) {
     const errs = validator.errors.map(e => e.stack);
