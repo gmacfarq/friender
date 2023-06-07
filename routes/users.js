@@ -59,7 +59,7 @@ const upload = multer({
  *
  * Authorization required: admin
  **/
-//TODO: handle image post and change schema too
+
 router.post("/", upload.single('image'), async function (req, res, next) {
   const validator = jsonschema.validate(
     req.body,
@@ -75,22 +75,6 @@ router.post("/", upload.single('image'), async function (req, res, next) {
   console.log("imageFile = ", imageFile);
   let imgUrl = `https://${bucketName}.s3.amazonaws.com/${imageFile.key}`;;
 
-  // console.log("file recieved = ", imageFile);
-  // const params = {
-  //   Bucket: bucketName,
-  //   Key: imageFile.originalname,
-  //   Body: imageFile.buffer,
-  //   ACL: 'public-read'
-  // };
-
-  // try {
-  //   const uploadedObject = await s3.upload(params).promise();
-  //   imgUrl = uploadedObject.Location;
-  //   res.status(200).json({ message: 'Image uploaded successfully' });
-  // } catch (error) {
-  //   console.error('Error uploading image to S3:', error);
-  //   res.status(500).json({ message: 'Error uploading image' });
-  // }
 
   const allUsers = await User.findAll();
   const allUserNames = allUsers.map(user => user.username);
@@ -105,6 +89,7 @@ router.post("/", upload.single('image'), async function (req, res, next) {
     };
     console.log(otherUsername)
     Match.create(data);
+    console.log("otherusername===", otherUsername)
   }
 
   const token = createToken(newUser);

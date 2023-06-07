@@ -23,7 +23,7 @@ class Message {
       VALUES ($1, $2, $3, $4)
       RETURNING
         message_id AS "messageId",
-        receiver_username AS  "receiverUsername",
+        receiver_username AS  "receiverUsername",npm 
         sender_username AS "senderUsername",
       message_text AS "messageText",
       message_date AS "messageDate"
