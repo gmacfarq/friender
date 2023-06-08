@@ -175,12 +175,13 @@ class Match {
       [true]
     );
 
-    if(result.user2Like && result.user1Like){
+    let match = result.rows[0]
+    if(match.user2Like && match.user1Like){
       let data = {
-        user_username_1: result.user1Like,
-        user_username_2: result.user2Like
+        user_username_1: match.user1Like,
+        user_username_2: match.user2Like
       }
-      await Match.create(data, true)
+      Match.create(data, true)
     }
 
     return `${username} successfully liked match ${id}`;
