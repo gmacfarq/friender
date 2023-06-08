@@ -155,4 +155,27 @@ router.delete("/:username", ensureCorrectUserOrAdmin, async function (req, res, 
 });
 
 
+
+router.get("/:username/matches/potential", async function (req, res, next){
+  try{
+    const allPotentialMatches = await Match.getAllPotential(req.params.username);
+  return res.json({allPotentialMatches})
+  }catch (error){
+    console.error(error.message)
+  }
+});
+
+
+
+router.get("/:username/matches/successful", async function (req, res, next){
+  try{
+   const allSuccessfulMatches = await Match.getAllSuccessful(req.params.username);
+   return res.json({allSuccessfulMatches})
+  } catch (error){
+    console.error(error.message)
+  }
+});
+
+
+
 module.exports = router;

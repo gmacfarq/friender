@@ -148,6 +148,17 @@ class Match {
     return result.rows;
   }
 
+    static async updatePotentialMatch(username, id, isUser1){
+
+      const result = await db.query(`
+      UPDATE potential_matches
+      SET ${isUser1 ? "user_1_like === $1" : "user_2_like === $1"  }
+      WHERE match_id = ${id}
+      RETURNING id,
+
+     `
+  );
+    }
   /** delete when user unlike the other user
    *
    * @param {*} id

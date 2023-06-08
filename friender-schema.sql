@@ -19,7 +19,9 @@ CREATE TABLE potential_matches (
     REFERENCES users ON DELETE CASCADE,
   user_username_2 VARCHAR(50)
     REFERENCES users ON DELETE CASCADE,
- match_date DATE DEFAULT CURRENT_DATE NOT NULL
+ match_date DATE DEFAULT CURRENT_DATE NOT NULL,
+ user_1_like BOOLEAN DEFAULT FALSE,
+ user_2_like BOOLEAN DEFAULT FALSE,
 );
 
 CREATE TABLE successful_matches (
