@@ -154,7 +154,7 @@ class Match {
   static async likePotentialMatch(username, id, isUser1 = false) {
 
     try {
-      const match = await Match.getPotential(id);
+      const match = await this.getPotential(id);
       // console.log("match=",match)
       // console.log(match.user_username_1)
       if (match.userUserName1 === username) {
@@ -170,18 +170,22 @@ class Match {
       SET ${isUser1 ? "user_1_like" : "user_2_like"} = $1
       WHERE match_id = ${id}
       RETURNING user_1_like AS "user1Like",
-                user_2_like AS "user2Like"
+                user_2_like AS "user2Like",
+                user_username_1 AS "userUserName1",
+                user_username_2 AS "userUserName2"
      `,
       [true]
     );
 
     let match = result.rows[0]
+    console.log("match=",match)
     if(match.user2Like && match.user1Like){
+      console.log("found a common match!")
       let data = {
-        user_username_1: match.user1Like,
-        user_username_2: match.user2Like
+        user_username_1: match.userUserName1,
+        user_username_2: match.userUserName2
       }
-      Match.create(data, true)
+      this.create(data, true)
     }
 
     return `${username} successfully liked match ${id}`;

@@ -67,7 +67,7 @@ router.post("/", upload.single('image'), async function (req, res, next) {
 
   const imageFile = req.file;
   console.log("imageFile = ", imageFile);
-  let imgUrl = `https://${bucketName}.s3.amazonaws.com/${imageFile.key}`;;
+  let imgUrl = `https://${bucketName}.s3.amazonaws.com/${imageFile.key}`;
 
 
   const allUsers = await User.findAll();
