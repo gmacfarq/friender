@@ -9,7 +9,19 @@ const {
 
 const { BCRYPT_WORK_FACTOR } = require("../config.js");
 
+
+
 class Match {
+    /** Create a match of either potential match or successful match
+   *
+   *@param {obj} data
+   * data should be { user_username_1, user_username_2 }
+   * @param {boolean}
+   * determine match isSuccessful or potential, default is false for is successful.
+   *
+   *@return {object}
+   * Returns { match_id,user_username_1, user_username_2 }
+   **/
 
   static async create(data, isSuccessful = false) {
     let tableName;
@@ -37,7 +49,15 @@ class Match {
     return result.rows[0];
   }
 
-  
+/**
+ * get successful match by id
+ *
+ * @param {*} id
+ * id of successful match
+ * @returns {obj}
+ * { match_id,user_username_1, user_username_2 }
+ * match_id of successful match
+ */
 
   static async getSuccessful(id) {
     const result = await db.query(`
@@ -57,6 +77,15 @@ class Match {
 
   }
 
+  /**
+ * get potential match by id
+ *
+ * @param {*} id
+ * id of potential match
+ * @returns {obj}
+ * { match_id,user_username_1, user_username_2 }
+ * match_id of potential match
+ */
   static async getPotential(id) {
     const result = await db.query(`
         SELECT match_id AS "matchId",
@@ -74,6 +103,15 @@ class Match {
     return match;
   }
 
+    /**
+ * get all potential match by username
+ *
+ * @param {string} username
+ * username to retrieve potential match for
+ * @returns {array} array of objects
+ * [{ match_id,user_username_1, user_username_2 },{...}]
+ *
+ */
   static async getAllPotential(username) {
     const result = await db.query(`
         SELECT match_id AS "matchId",
@@ -88,6 +126,15 @@ class Match {
     return result.rows;
   }
 
+     /**
+ * get all successful match by username
+ *
+ * @param {string} username
+ * username to retrieve successful match for
+ * @returns {array} array of objects
+ * [{ match_id,user_username_1, user_username_2 },{...}]
+ *
+ */
   static async getAllSuccessful(username) {
     const result = await db.query(`
         SELECT match_id AS "matchId",
@@ -101,6 +148,11 @@ class Match {
     return result.rows;
   }
 
+  /** delete when user unlike the other user
+   *
+   * @param {*} id
+   * @param {*} isSuccessful = false
+   */
   static async delete(id, isSuccessful = false) {
     let tableName;
     if (isSuccessful === true) {
