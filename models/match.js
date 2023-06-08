@@ -12,16 +12,16 @@ const { BCRYPT_WORK_FACTOR } = require("../config.js");
 
 
 class Match {
-    /** Create a match of either potential match or successful match
-   *
-   *@param {obj} data
-   * data should be { user_username_1, user_username_2 }
-   * @param {boolean}
-   * determine match isSuccessful or potential, default is false for is successful.
-   *
-   *@return {object}
-   * Returns { match_id,user_username_1, user_username_2 }
-   **/
+  /** Create a match of either potential match or successful match
+ *
+ *@param {obj} data
+ * data should be { user_username_1, user_username_2 }
+ * @param {boolean}
+ * determine match isSuccessful or potential, default is false for is successful.
+ *
+ *@return {object}
+ * Returns { match_id,user_username_1, user_username_2 }
+ **/
 
   static async create(data, isSuccessful = false) {
     let tableName;
@@ -49,15 +49,15 @@ class Match {
     return result.rows[0];
   }
 
-/**
- * get successful match by id
- *
- * @param {*} id
- * id of successful match
- * @returns {obj}
- * { match_id,user_username_1, user_username_2 }
- * match_id of successful match
- */
+  /**
+   * get successful match by id
+   *
+   * @param {*} id
+   * id of successful match
+   * @returns {obj}
+   * { match_id,user_username_1, user_username_2 }
+   * match_id of successful match
+   */
 
   static async getSuccessful(id) {
     const result = await db.query(`
@@ -103,15 +103,15 @@ class Match {
     return match;
   }
 
-    /**
- * get all potential match by username
- *
- * @param {string} username
- * username to retrieve potential match for
- * @returns {array} array of objects
- * [{ match_id,user_username_1, user_username_2 },{...}]
- *
- */
+  /**
+* get all potential match by username
+*
+* @param {string} username
+* username to retrieve potential match for
+* @returns {array} array of objects
+* [{ match_id,user_username_1, user_username_2 },{...}]
+*
+*/
   static async getAllPotential(username) {
     const result = await db.query(`
         SELECT match_id AS "matchId",
@@ -126,15 +126,15 @@ class Match {
     return result.rows;
   }
 
-     /**
- * get all successful match by username
- *
- * @param {string} username
- * username to retrieve successful match for
- * @returns {array} array of objects
- * [{ match_id,user_username_1, user_username_2 },{...}]
- *
- */
+  /**
+* get all successful match by username
+*
+* @param {string} username
+* username to retrieve successful match for
+* @returns {array} array of objects
+* [{ match_id,user_username_1, user_username_2 },{...}]
+*
+*/
   static async getAllSuccessful(username) {
     const result = await db.query(`
         SELECT match_id AS "matchId",
@@ -148,17 +148,43 @@ class Match {
     return result.rows;
   }
 
-    static async updatePotentialMatch(username, id, isUser1){
+  /** like a potential match
+  *
+  */
+  static async likePotentialMatch(username, id, isUser1 = false) {
 
-      const result = await db.query(`
-      UPDATE potential_matches
-      SET ${isUser1 ? "user_1_like === $1" : "user_2_like === $1"  }
-      WHERE match_id = ${id}
-      RETURNING id,
-
-     `
-  );
+    try {
+      const match = await Match.getPotential(id);
+      // console.log("match=",match)
+      // console.log(match.user_username_1)
+      if (match.userUserName1 === username) {
+        // console.log(match.user_username_1)
+        isUser1 = true;
+      }
+    } catch (err) {
+      return err.message;
     }
+
+    const result = await db.query(`
+      UPDATE potential_matches
+      SET ${isUser1 ? "user_1_like" : "user_2_like"} = $1
+      WHERE match_id = ${id}
+      RETURNING user_1_like AS "user1Like",
+                user_2_like AS "user2Like"
+     `,
+      [true]
+    );
+
+    if(result.user2Like && result.user1Like){
+      let data = {
+        user_username_1: result.user1Like,
+        user_username_2: result.user2Like
+      }
+      await Match.create(data, true)
+    }
+
+    return `${username} successfully liked match ${id}`;
+  }
   /** delete when user unlike the other user
    *
    * @param {*} id
@@ -184,4 +210,4 @@ class Match {
   }
 }
 
-module.exports = Match
+module.exports = Match;

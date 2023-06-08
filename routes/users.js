@@ -81,9 +81,9 @@ router.post("/", upload.single('image'), async function (req, res, next) {
       user_username_1: newUser.username,
       user_username_2: otherUsername
     };
-    console.log(otherUsername)
+    console.log(otherUsername);
     Match.create(data);
-    console.log("otherusername===", otherUsername)
+    console.log("otherusername===", otherUsername);
   }
 
   const token = createToken(newUser);
@@ -156,23 +156,35 @@ router.delete("/:username", ensureCorrectUserOrAdmin, async function (req, res, 
 
 
 
-router.get("/:username/matches/potential", async function (req, res, next){
-  try{
+router.get("/:username/matches/potential", async function (req, res, next) {
+  try {
     const allPotentialMatches = await Match.getAllPotential(req.params.username);
-  return res.json({allPotentialMatches})
-  }catch (error){
-    console.error(error.message)
+    return res.json({ allPotentialMatches });
+  } catch (error) {
+    console.error(error.message);
+  }
+});
+
+router.patch("/:username/matches/:id", async function (req, res, next) {
+  try {
+    const update = await Match.likePotentialMatch(
+      req.params.username,
+      req.params.id
+      );
+    return res.json({ update });
+  } catch (error) {
+    console.error(error.message);
   }
 });
 
 
 
-router.get("/:username/matches/successful", async function (req, res, next){
-  try{
-   const allSuccessfulMatches = await Match.getAllSuccessful(req.params.username);
-   return res.json({allSuccessfulMatches})
-  } catch (error){
-    console.error(error.message)
+router.get("/:username/matches/successful", async function (req, res, next) {
+  try {
+    const allSuccessfulMatches = await Match.getAllSuccessful(req.params.username);
+    return res.json({ allSuccessfulMatches });
+  } catch (error) {
+    console.error(error.message);
   }
 });
 
