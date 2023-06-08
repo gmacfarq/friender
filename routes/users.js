@@ -18,7 +18,6 @@ const userUpdateSchema = require("../schemas/userUpdate.json");
 
 const router = express.Router();
 
-
 const s3 = new S3Client({
   credentials: {
     accessKeyId: AWS_ACCESS_KEY,
@@ -26,6 +25,7 @@ const s3 = new S3Client({
   },
   region: "us-east-1"
 });
+
 
 const bucketName = 'friender-bucket-rithm31';
 

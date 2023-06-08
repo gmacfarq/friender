@@ -28,10 +28,6 @@
         "minLength": 6,
           "maxLength": 60,
             "format": "email"
-    },
-    "image": {
-      "type": "string",
-      "format": "uri"
     }
   },
   "additionalProperties": false,
@@ -40,7 +36,6 @@
       "firstName",
       "lastName",
       "password",
-      "email",
-      "image"
+      "email"
     ]
 }
