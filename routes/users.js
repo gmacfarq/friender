@@ -8,7 +8,6 @@ const express = require("express");
 const multer = require('multer');
 const multerS3 = require('multer-s3');
 const { S3Client } = require('@aws-sdk/client-s3');
-const { ensureCorrectUserOrAdmin, ensureAdmin } = require("../middleware/auth");
 const { BadRequestError } = require("../expressError");
 const User = require("../models/user");
 const Match = require("../models/match");
@@ -149,13 +148,17 @@ router.patch("/:username", async function (req, res, next) {
  * Authorization required: admin or same-user-as-:username
  **/
 
-router.delete("/:username", ensureCorrectUserOrAdmin, async function (req, res, next) {
+router.delete("/:username", async function (req, res, next) {
   await User.remove(req.params.username);
   return res.json({ deleted: req.params.username });
 });
 
 
-
+/**
+ * GET /[username]/matches/potential => {[match1, match2,...]}
+ *
+ * get all potential matches for a user
+ */
 router.get("/:username/matches/potential", async function (req, res, next) {
   try {
     const allPotentialMatches = await Match.getAllPotential(req.params.username);
@@ -165,6 +168,11 @@ router.get("/:username/matches/potential", async function (req, res, next) {
   }
 });
 
+/**
+ * PATCH /[username]/matches/[id] => {"[username] liked match [id]"}
+ *
+ * Update a potential match so that is it liked
+ */
 router.patch("/:username/matches/:id", async function (req, res, next) {
   try {
     const update = await Match.likePotentialMatch(
@@ -177,8 +185,11 @@ router.patch("/:username/matches/:id", async function (req, res, next) {
   }
 });
 
-
-
+/**
+ * GET /[username]/matches/successful => {[match1, match2,...]}
+ *
+ * get all successful matches for a user
+ */
 router.get("/:username/matches/successful", async function (req, res, next) {
   try {
     const allSuccessfulMatches = await Match.getAllSuccessful(req.params.username);
