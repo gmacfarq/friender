@@ -117,9 +117,12 @@ class Match {
         SELECT match_id AS "matchId",
                user_username_1 AS "userUserName1",
                user_username_2 AS "userUserName2",
+               user_1_like AS "user1Like",
+               user_2_like AS "user2Like",
                match_date AS "matchDate"
         FROM potential_matches
-          WHERE user_username_1 = $1 OR user_username_2 = $1
+          WHERE (user_username_1 = $1 AND user_1_like = false)
+                OR (user_username_2 = $1 AND user_2_like = false)
         ORDER BY match_date`, [username]
     );
 
@@ -206,8 +209,8 @@ class Match {
     const result = await db.query(
       `DELETE
      FROM ${tableName}
-     WHERE id = $1
-     RETURNING id`, [id]);
+     WHERE match_id = $1
+     RETURNING match_id`, [id]);
     const match = result.rows[0];
 
     if (!match) throw new NotFoundError(`No match: ${id}`);
