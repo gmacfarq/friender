@@ -88,7 +88,7 @@ class User {
                     email,
                     hobbies,
                     interests,
-                    zip_code AS "zipCode"
+                    zip_code AS "zipCode",
                     img_url AS "imgUrl",
                     is_admin AS "isAdmin"`, [
       username,
