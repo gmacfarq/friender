@@ -56,7 +56,7 @@ class User {
    **/
 
   static async register(
-    { username, password, firstName, lastName, email, hobbies, interests, imgUrl}) {
+    { username, password, firstName, lastName, email, hobbies, interests, zipCode, imgUrl}) {
     const duplicateCheck = await db.query(`
         SELECT username
         FROM users
@@ -78,8 +78,9 @@ class User {
                  email,
                  hobbies,
                  interests,
+                 zip_code,
                  img_url)
-                VALUES ($1, $2, $3, $4, $5, $6, $7,$8)
+                VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
                 RETURNING
                     username,
                     first_name AS "firstName",
@@ -87,6 +88,7 @@ class User {
                     email,
                     hobbies,
                     interests,
+                    zip_code AS "zipCode"
                     img_url AS "imgUrl",
                     is_admin AS "isAdmin"`, [
       username,
@@ -96,6 +98,7 @@ class User {
       email,
       hobbies,
       interests,
+      zipCode,
       imgUrl,
     ],
     );
