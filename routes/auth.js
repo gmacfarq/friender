@@ -51,7 +51,7 @@ router.post("/token", async function (req, res, next) {
   const validator = jsonschema.validate(
     req.body,
     userAuthSchema,
-    {required: true}
+    { required: true }
   );
   if (!validator.valid) {
     const errs = validator.errors.map(e => e.stack);
@@ -78,7 +78,7 @@ router.post("/register", upload.single('image'), async function (req, res, next)
   const validator = jsonschema.validate(
     req.body,
     userRegisterSchema,
-    {required: true}
+    { required: true }
   );
   if (!validator.valid) {
     const errs = validator.errors.map(e => e.stack);
@@ -86,7 +86,10 @@ router.post("/register", upload.single('image'), async function (req, res, next)
   }
 
   const imageFile = req.file;
-  let imgUrl = imageFile.location;
+  let imgUrl = "";
+  if (imageFile) {
+    imgUrl = imageFile.location;
+  }
 
   const allUsers = await User.findAll();
   const allUserNames = allUsers.map(user => user.username);
