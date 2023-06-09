@@ -147,7 +147,8 @@ class User {
                hobbies,
                interests,
                img_url AS  "imgUrl",
-               is_admin   AS "isAdmin"
+               is_admin   AS "isAdmin",
+               zip_code AS "zipCode"
         FROM users
         WHERE username = $1`, [username],
     );
