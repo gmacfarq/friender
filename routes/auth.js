@@ -103,9 +103,7 @@ router.post("/register", upload.single('image'), async function (req, res, next)
       user_username_1: newUser.username,
       user_username_2: otherUsername
     };
-    console.log(otherUsername);
     Match.create(data);
-    console.log("otherusername===", otherUsername);
   }
 
   const token = createToken(newUser);
